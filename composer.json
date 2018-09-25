@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": "^7.1.1",
-        "illuminate/console": "~5.2",
+        "illuminate/console": "~5.2"
     },
     "autoload": {
         "psr-4": {
