@@ -1,0 +1,46 @@
+{
+    "name": "priondevelopment/error",
+    "description": "Throw consistent error exceptions in an API.",
+    "keywords": ["error","api"],
+    "license": "MIT",
+    "homepage": "https://priondevelopment.com/packages/error",
+    "support": {
+        "issues": "https://github.com/priondevelopment/error/issues",
+        "source": "https://github.com/priondevelopment/error"
+    },
+    "authors": [
+        {
+            "name": "Brandon Best",
+            "email": "brandonbest@priondevelopment.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1.1",
+        "illuminate/console": "~5.2",
+    },
+    "autoload": {
+        "psr-4": {
+            "Error\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Error\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Error\\ErrorServiceProvider"
+            ],
+            "aliases": {
+                "Error": "Error\\ErrorFacade"
+            }
+        }
+    }
+}
