@@ -28,6 +28,7 @@ class Handler extends ExceptionHandler
         ModelNotFoundException::class,
         ValidationException::class,
         JsonException::class,
+        JsonErrorException::class,
         CodeException::class,
         CustomException::class,
     ];
@@ -57,6 +58,9 @@ class Handler extends ExceptionHandler
         if ($e instanceof JsonException) {
             return $this->jsonException($e);
 
+        } elseif ($e instanceof JsonErrorException) {
+            return $this->jsonErrorException($e);
+
         } elseif ($e instanceof CodeException) {
             return app()->make('error')->code($e->getMessage());
 
@@ -64,7 +68,7 @@ class Handler extends ExceptionHandler
             return app()->make('error')->message($e->getMessage());
 
         } elseif ($e instanceof NotFoundHttpException){
-            $this->error404();
+            return $this->error404();
 
         } elseif ($e instanceof MethodNotAllowedHttpException) {
             // Do Not Throw an Exception for this
@@ -83,10 +87,9 @@ class Handler extends ExceptionHandler
      * @param $e
      * @return \Illuminate\Http\JsonResponse
      */
-    private function jsonException($e)
+    private function jsonException($e, $httpCode=200)
     {
-        $array = json_decode($e->getMessage());
-        $httpCode = 500;
+        $array = json_decode($e->getMessage(), true);
 
         if (isset($array['httpCode'])) {
             $httpCode = $array['httpCode'];
@@ -94,6 +97,18 @@ class Handler extends ExceptionHandler
         }
 
         return response()->json($array, $httpCode);
+    }
+
+
+    /**
+     * Return a 500 Json error
+     *
+     * @param $e
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function jsonErrorException($e)
+    {
+        return $this->jsonException($e, 500);
     }
 
 
@@ -107,7 +122,7 @@ class Handler extends ExceptionHandler
         return response()->json([
             'status' => 0,
             'error' => 1,
-            'message' => trans('api.errors.404'),
+            'message' => trans('error::error.404'),
         ], 404);
     }
 

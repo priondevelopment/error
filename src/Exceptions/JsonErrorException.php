@@ -4,4 +4,4 @@ namespace Error\Exceptions;
 
 use Exception;
 
-class JsonException extends Exception {}
+class JsonErrorException extends Exception {}

@@ -57,6 +57,13 @@ class ErrorServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/config/error.php' => $app_path,
         ], 'error');
+
+        // Register Translations
+        $trans_path = __DIR__.'/resources/lang';
+        $this->loadTranslationsFrom($trans_path, 'error');
+        $this->publishes([
+            $trans_path => resource_path('lang/vendor/error'),
+        ]);
     }
 
 
