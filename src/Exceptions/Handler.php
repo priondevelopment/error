@@ -74,7 +74,9 @@ class Handler extends ExceptionHandler
             // Do Not Throw an Exception for this
 
         } elseif ($e instanceof FatalErrorException) {
-            return $this->fatalErrorException($e);
+            if (config('prionerror.jsonDefaultError')) {
+                return $this->fatalErrorException($e);
+            }
         }
 
         return parent::render($request, $e);

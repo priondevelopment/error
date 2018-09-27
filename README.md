@@ -14,3 +14,7 @@ Also, replace the default error handler with:
      Illuminate\Contracts\Debug\ExceptionHandler::class,
      Error\Exceptions\Handler::class
  );`
+
+
+ To create a customizable config file:
+ `php artisan error:config`

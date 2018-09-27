@@ -8,7 +8,7 @@ namespace Error;
  *
  * @license MIT
  * @company Prion Development
- * @package Setting
+ * @package Error
  */
 
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -30,6 +30,7 @@ class ErrorServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
+        'Config' => 'command.error.config',
     ];
 
     /**
@@ -53,10 +54,10 @@ class ErrorServiceProvider extends ServiceProvider
     public function boot()
     {
         // Register published configuration.
-        $app_path = app()->basePath('config/error.php');
+        $app_path = app()->basePath('config/prionerror.php');
         $this->publishes([
-            __DIR__.'/config/error.php' => $app_path,
-        ], 'error');
+            __DIR__.'/config/prionerror.php' => $app_path,
+        ], 'prionerror');
 
         // Register Translations
         $trans_path = __DIR__.'/resources/lang';
@@ -74,21 +75,55 @@ class ErrorServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerCommands();
+
         $this->mergeConfig();
     }
 
 
     /**
-     * Merges Config Settings
+     * Merges Config
      *
      * @return void
      */
     private function mergeConfig()
     {
+        $this->app->configure('prionerror');
         $this->mergeConfigFrom(
-            __DIR__ . '/config/error.php',
-            'error'
+            __DIR__ . '/config/prionerror.php',
+            'prionerror'
         );
     }
+
+
+    /**
+     * Register the given commands.
+     *
+     * @return void
+     */
+    protected function registerCommands()
+    {
+        foreach (array_keys($this->commands) as $command) {
+            $method = "register{$command}Command";
+
+            call_user_func_array([$this, $method], []);
+        }
+
+        $this->commands(array_values($this->commands));
+    }
+
+
+    /**
+     * Bind the Error Config Setup Command
+     *
+     */
+    protected function registerConfigCommand()
+    {
+        $command = $this->commands['Config'];
+        $this->app->singleton($command, function () {
+            return new \Error\Commands\ConfigCommand;
+        });
+    }
+
 
 }
